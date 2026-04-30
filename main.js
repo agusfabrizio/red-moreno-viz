@@ -368,6 +368,16 @@ document.addEventListener('DOMContentLoaded', () => {
         parentSelect.appendChild(option);
     });
 
+    // Poblar subParentSelect con categorías (profundidad 1)
+    const subParentSelect = document.getElementById("new-sub-parent");
+    const categories = data.children.map(c => c.name).sort();
+    categories.forEach(name => {
+        const option = document.createElement("option");
+        option.value = name;
+        option.text = name;
+        subParentSelect.appendChild(option);
+    });
+
     document.getElementById("add-connection").addEventListener("click", () => {
         const s = document.getElementById("source-actor").value;
         const t = document.getElementById("target-actor").value;
@@ -460,6 +470,68 @@ document.addEventListener('DOMContentLoaded', () => {
             location.reload();
         } else {
             alert("Ingresa un actor válido para eliminar.");
+        }
+    });
+
+    // Renombrar Actor
+    document.getElementById("rename-actor").addEventListener("click", () => {
+        const oldName = document.getElementById("rename-actor-old").value.trim().toUpperCase();
+        const newName = document.getElementById("rename-actor-new").value.trim().toUpperCase();
+
+        if (oldName && newName && actorNames.includes(oldName)) {
+            if (actorNames.includes(newName)) {
+                alert("El nuevo nombre ya existe.");
+                return;
+            }
+
+            // Actualizar en 'data'
+            function renameNode(node) {
+                if (node.name === oldName) {
+                    node.name = newName;
+                    return true;
+                }
+                if (node.children) {
+                    for (let child of node.children) {
+                        if (renameNode(child)) return true;
+                    }
+                }
+                return false;
+            }
+
+            renameNode(data);
+
+            // Actualizar en 'linkDefinitions'
+            linkDefinitions.forEach(link => {
+                if (link.s === oldName) link.s = newName;
+                if (link.t === oldName) link.t = newName;
+            });
+
+            localStorage.setItem('red_moreno_data', JSON.stringify(data));
+            localStorage.setItem('red_moreno_links', JSON.stringify(linkDefinitions));
+            location.reload();
+        } else {
+            alert("Completa ambos campos con nombres válidos.");
+        }
+    });
+
+    // Añadir Subcategoría
+    document.getElementById("add-subcategory").addEventListener("click", () => {
+        const subName = document.getElementById("new-sub-name").value.trim().toUpperCase();
+        const parentCatName = subParentSelect.value;
+
+        if (subName && parentCatName) {
+            const cat = data.children.find(c => c.name === parentCatName);
+            if (cat) {
+                if (cat.children.some(s => s.name === subName)) {
+                    alert("Esa subcategoría ya existe en esta categoría.");
+                    return;
+                }
+                cat.children.push({ name: subName, children: [] });
+                localStorage.setItem('red_moreno_data', JSON.stringify(data));
+                location.reload();
+            }
+        } else {
+            alert("Completa el nombre y selecciona la categoría padre.");
         }
     });
 
