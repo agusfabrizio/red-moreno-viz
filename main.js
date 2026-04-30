@@ -171,7 +171,7 @@ labels.selectAll(".curved-text")
     .attr("text-anchor", "middle")
     .attr("fill", d => d.depth === 1 ? "white" : "black")
     .attr("dy", "0.35em")
-    .style("font-size", "9px")
+    .style("font-size", "16px")
     .style("font-weight", "800")
     .style("text-transform", "uppercase")
     .style("letter-spacing", "1px")
@@ -327,8 +327,8 @@ paths.on("mouseenter", function(event, d) {
     svg.selectAll("text").transition().duration(300)
        .style("opacity", t => connectedNodes.has(t) ? 1 : 0.1)
        .style("font-size", t => {
-           if (connectedNodes.has(t)) return t.depth === 3 ? "14px" : "11px";
-           return t.depth === 3 ? "10px" : "9px";
+           if (connectedNodes.has(t)) return t.depth === 3 ? "14px" : "18px";
+           return t.depth === 3 ? "10px" : "16px";
        });
 })
 .on("mouseleave", function() {
@@ -343,7 +343,7 @@ paths.on("mouseenter", function(event, d) {
 
     svg.selectAll("text").transition().duration(300)
        .style("opacity", 0.8)
-       .style("font-size", d => d.depth === 3 ? "10px" : "9px");
+       .style("font-size", d => d.depth === 3 ? "10px" : "16px");
 });
 
 // Lógica de UI Interactiva
