@@ -44,9 +44,16 @@ svg {
 }
 
 /* Tooltip & UI Elements */
-.content {
+.app-header {
   position: absolute;
   top: 40px;
+  left: 40px;
+  z-index: 10;
+}
+
+.content {
+  position: absolute;
+  top: 120px;
   left: 40px;
   z-index: 10;
   pointer-events: auto; /* Changed to auto so buttons are clickable */
@@ -183,4 +190,69 @@ path {
   text-transform: uppercase;
   letter-spacing: 1px;
   pointer-events: none;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  body {
+    height: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
+    display: block;
+  }
+
+  #app {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    height: auto;
+    padding-bottom: 40px;
+  }
+
+  .app-header {
+    position: static;
+    text-align: center;
+    margin-top: 20px;
+    order: 1;
+    width: 100%;
+  }
+
+  h1 {
+    font-size: 2.5rem;
+  }
+
+  svg {
+    margin-left: 0;
+    width: 100vw;
+    height: 100vw;
+    order: 2;
+    margin-top: 10px;
+  }
+
+  .content {
+    position: static;
+    order: 3;
+    width: 100%;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    max-height: none;
+    overflow-y: visible;
+  }
+
+  .control-panel {
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 0;
+  }
+
+  .legend {
+    position: static;
+    order: 4;
+    width: 100%;
+    max-width: 400px;
+    margin: 20px auto 0;
+    box-sizing: border-box;
+  }
 }
