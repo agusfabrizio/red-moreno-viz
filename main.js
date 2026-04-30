@@ -1,5 +1,5 @@
 // Mock Data: Skills and Connections
-const data = {
+const defaultData = {
   name: "RED MORENO",
   children: [
     {
@@ -35,6 +35,8 @@ const data = {
     }
   ]
 };
+
+const data = JSON.parse(localStorage.getItem('red_moreno_data')) || defaultData;
 
 // 1. Configurar el lienzo
 const width = 1000; // Aumentado para acomodar 3 anillos
@@ -202,7 +204,7 @@ const leafNodes = hierarchy.leaves();
 
 const getNode = name => leafNodes.find(n => n.data.name === name);
 
-const linkDefinitions = [
+const defaultLinkDefinitions = [
     { s: "INTENDENCIA", t: "IDUAR", type: 1 },
     { s: "INTENDENCIA", t: "OBRAS PÚBLICAS", type: 1 },
     { s: "OPISU", t: "INTENDENCIA", type: 5 },
@@ -236,6 +238,8 @@ const linkDefinitions = [
     { s: "DEL. CUARTEL V", t: "INTENDENCIA", type: 6 },
     { s: "IDUAR", t: "HCD", type: 6 }
 ];
+
+const linkDefinitions = JSON.parse(localStorage.getItem('red_moreno_links')) || defaultLinkDefinitions;
 
 
 const links = linkDefinitions.map(l => ({
@@ -341,35 +345,36 @@ paths.on("mouseenter", function(event, d) {
 
 // Lógica de UI Interactiva
 document.addEventListener('DOMContentLoaded', () => {
-    const sourceSelect = document.getElementById("source-actor");
-    const targetSelect = document.getElementById("target-actor");
+    const dataList = document.getElementById("actor-list");
+    const parentSelect = document.getElementById("new-actor-parent");
     
-    // Poblar dropdowns con los actores (nodos hoja)
+    // Poblar datalist con actores
     const actorNames = leafNodes.map(d => d.data.name).sort();
-    
     actorNames.forEach(name => {
-        const option1 = document.createElement("option");
-        option1.value = name;
-        option1.text = name;
-        sourceSelect.appendChild(option1);
-        
-        const option2 = document.createElement("option");
-        option2.value = name;
-        option2.text = name;
-        targetSelect.appendChild(option2);
+        const option = document.createElement("option");
+        option.value = name;
+        dataList.appendChild(option);
+    });
+
+    // Poblar parentSelect con subcategorías (profundidad 2)
+    const subcategories = hierarchy.descendants().filter(d => d.depth === 2).map(d => d.data.name).sort();
+    subcategories.forEach(name => {
+        const option = document.createElement("option");
+        option.value = name;
+        option.text = name;
+        parentSelect.appendChild(option);
     });
 
     document.getElementById("add-connection").addEventListener("click", () => {
-        const s = sourceSelect.value;
-        const t = targetSelect.value;
+        const s = document.getElementById("source-actor").value;
+        const t = document.getElementById("target-actor").value;
         const type = document.getElementById("relation-type").value;
         
-        if (s && t && type && s !== t) {
-            // Agregar a definiciones y re-renderizar
+        if (s && t && type && s !== t && actorNames.includes(s) && actorNames.includes(t)) {
             linkDefinitions.push({ s, t, type: parseInt(type) });
+            localStorage.setItem('red_moreno_links', JSON.stringify(linkDefinitions));
             renderLinks();
             
-            // Animar el último link añadido
             const newPaths = linksLayer.selectAll("path").filter((d, i, nodes) => i === nodes.length - 1);
             newPaths.each(function() {
                 const length = this.getTotalLength();
@@ -382,13 +387,109 @@ document.addEventListener('DOMContentLoaded', () => {
                     .attr("stroke-dashoffset", 0);
             });
             
-            // Resetear selects
-            sourceSelect.value = "";
-            targetSelect.value = "";
+            document.getElementById("source-actor").value = "";
+            document.getElementById("target-actor").value = "";
             document.getElementById("relation-type").value = "";
         } else {
-            alert("Por favor, selecciona un origen, un destino válido (distinto al origen) y un tipo de relación.");
+            alert("Por favor, ingresa actores válidos y un tipo de relación.");
         }
+    });
+
+    // Añadir Actor
+    document.getElementById("add-actor").addEventListener("click", () => {
+        const newName = document.getElementById("new-actor-name").value.trim().toUpperCase();
+        const parentName = parentSelect.value;
+
+        if (newName && parentName) {
+            if (actorNames.includes(newName)) {
+                alert("Ese actor ya existe.");
+                return;
+            }
+            
+            // Buscar subcategoría en 'data' recursivamente
+            function addNodeToParent(node) {
+                if (node.name === parentName && node.children) {
+                    node.children.push({ name: newName, value: 1 });
+                    return true;
+                }
+                if (node.children) {
+                    for (let child of node.children) {
+                        if (addNodeToParent(child)) return true;
+                    }
+                }
+                return false;
+            }
+            
+            addNodeToParent(data);
+            localStorage.setItem('red_moreno_data', JSON.stringify(data));
+            location.reload(); // Recargar para reconstruir jerarquía D3
+        } else {
+            alert("Completa el nombre y selecciona la subcategoría padre.");
+        }
+    });
+
+    // Eliminar Actor
+    document.getElementById("delete-actor").addEventListener("click", () => {
+        const delName = document.getElementById("delete-actor-name").value.trim().toUpperCase();
+        if (delName && actorNames.includes(delName)) {
+            // Eliminar de 'data'
+            function removeNode(node) {
+                if (node.children) {
+                    const idx = node.children.findIndex(c => c.name === delName);
+                    if (idx !== -1) {
+                        node.children.splice(idx, 1);
+                        return true;
+                    }
+                    for (let child of node.children) {
+                        if (removeNode(child)) return true;
+                    }
+                }
+                return false;
+            }
+
+            removeNode(data);
+            
+            // Eliminar links relacionados
+            const filteredLinks = linkDefinitions.filter(l => l.s !== delName && l.t !== delName);
+            
+            localStorage.setItem('red_moreno_data', JSON.stringify(data));
+            localStorage.setItem('red_moreno_links', JSON.stringify(filteredLinks));
+            location.reload();
+        } else {
+            alert("Ingresa un actor válido para eliminar.");
+        }
+    });
+
+    // Exportar a JPG
+    document.getElementById("export-jpg").addEventListener("click", () => {
+        // Ocultar temporalmente animaciones o hover effects si los hubiera
+        html2canvas(document.querySelector("#viz"), { backgroundColor: null }).then(canvas => {
+            const link = document.createElement('a');
+            link.download = 'Red-Moreno.jpg';
+            // Usar un fondo blanco explícito si se quiere, html2canvas capture null background as transparent. 
+            // Para JPG necesitamos forzar fondo blanco.
+            const ctx = canvas.getContext('2d');
+            ctx.globalCompositeOperation = 'destination-over';
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            link.href = canvas.toDataURL("image/jpeg", 1.0);
+            link.click();
+        });
+    });
+
+    // Exportar a PDF
+    document.getElementById("export-pdf").addEventListener("click", () => {
+        html2canvas(document.querySelector("#viz"), { backgroundColor: null }).then(canvas => {
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF({
+                orientation: "landscape",
+                unit: "px",
+                format: [canvas.width, canvas.height]
+            });
+            pdf.addImage(canvas.toDataURL("image/jpeg", 1.0), 'JPEG', 0, 0, canvas.width, canvas.height);
+            pdf.save("Red-Moreno.pdf");
+        });
     });
 });
 

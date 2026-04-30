@@ -9,6 +9,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;800&display=swap" rel="stylesheet">
     <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
     <div id="app">
@@ -18,12 +20,10 @@
 
             <div class="control-panel">
                 <h3>Conectar Actores</h3>
-                <select id="source-actor">
-                    <option value="" disabled selected>Origen</option>
-                </select>
-                <select id="target-actor">
-                    <option value="" disabled selected>Destino</option>
-                </select>
+                <input list="actor-list" id="source-actor" placeholder="Buscar Origen...">
+                <input list="actor-list" id="target-actor" placeholder="Buscar Destino...">
+                <datalist id="actor-list"></datalist>
+                
                 <select id="relation-type">
                     <option value="" disabled selected>Relación</option>
                     <option value="1">Dependencia jerárquica</option>
@@ -35,6 +35,26 @@
                     <option value="7">Regulación / Control</option>
                 </select>
                 <button id="add-connection">Conectar</button>
+
+                <hr style="width: 100%; border: 0; border-top: 1px solid #eee; margin: 5px 0;">
+
+                <h3>Gestión de Actores</h3>
+                <input type="text" id="new-actor-name" placeholder="Nombre del nuevo actor...">
+                <select id="new-actor-parent">
+                    <option value="" disabled selected>Seleccionar Subcategoría Padre...</option>
+                </select>
+                <button id="add-actor">Añadir Actor</button>
+
+                <input list="actor-list" id="delete-actor-name" placeholder="Actor a eliminar...">
+                <button id="delete-actor" style="background: #e74c3c;">Eliminar Actor</button>
+
+                <hr style="width: 100%; border: 0; border-top: 1px solid #eee; margin: 5px 0;">
+
+                <h3>Exportar Gráfico</h3>
+                <div style="display: flex; gap: 5px;">
+                    <button id="export-jpg" style="flex: 1; background: #2980b9;">JPG</button>
+                    <button id="export-pdf" style="flex: 1; background: #27ae60;">PDF</button>
+                </div>
             </div>
 
             <div class="legend">

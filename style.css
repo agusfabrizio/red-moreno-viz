@@ -40,15 +40,28 @@ svg {
   width: 90vmin;
   height: 90vmin;
   filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.05));
+  margin-left: 280px; /* Push graph right to make space for left panel */
 }
 
 /* Tooltip & UI Elements */
-.ui-overlay {
+.content {
   position: absolute;
   top: 40px;
   left: 40px;
   z-index: 10;
-  pointer-events: none;
+  pointer-events: auto; /* Changed to auto so buttons are clickable */
+  max-height: calc(100vh - 80px);
+  overflow-y: auto;
+  padding-right: 15px; /* for scrollbar */
+}
+
+/* Custom scrollbar for left panel */
+.content::-webkit-scrollbar {
+    width: 6px;
+}
+.content::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 4px;
 }
 
 h1 {
