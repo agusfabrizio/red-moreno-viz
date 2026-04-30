@@ -1,40 +1,5 @@
 // Mock Data: Skills and Connections
-const defaultData = {
-  name: "RED MORENO",
-  children: [
-    {
-      name: "ESTADO",
-      children: [
-        { name: "MUNICIPAL", children: [{name: "INTENDENCIA", value: 1}, {name: "IDUAR", value: 1}, {name: "OBRAS PÚBLICAS", value: 1}, {name: "DEL. CUARTEL V", value: 1}, {name: "HCD", value: 1}] },
-        { name: "PROVINCIAL", children: [{name: "OPISU", value: 1}, {name: "COMIREC", value: 1}, {name: "MIN. INFRAESTRUCTURA", value: 1}] },
-        { name: "NACIONAL", children: [{name: "SISU", value: 1}] },
-        { name: "JUDICIAL", children: [{name: "FISCALÍAS", value: 1}, {name: "JUZGADOS / DEF.", value: 1}] },
-        { name: "EDUCACIÓN", children: [{name: "UNM", value: 1}, {name: "FADU", value: 1}] },
-        { name: "SEGURIDAD", children: [{name: "POLICÍA", value: 1}] }
-      ]
-    },
-    {
-      name: "MARCO LEGAL",
-      children: [
-        { name: "NORMAS", children: [{name: "LEY 8912", value: 1}, {name: "LEY HÁBITAT", value: 1}, {name: "CÓDIGO URBANO", value: 1}] }
-      ]
-    },
-    {
-      name: "ORGANIZACIONES",
-      children: [
-        { name: "SOCIAL / ONG", children: [{name: "MADRE TIERRA", value: 1}, {name: "TECHO", value: 1}, {name: "MOV. SOCIALES", value: 1}, {name: "COOPERATIVAS", value: 1}] },
-        { name: "VECINAL", children: [{name: "SOC. FOMENTO", value: 1}, {name: "COMISIONES", value: 1}, {name: "OCUPANTES", value: 1}] }
-      ]
-    },
-    {
-      name: "MERCADO",
-      children: [
-        { name: "INFORMAL", children: [{name: "LOTEADORES INF.", value: 1}, {name: "PUNTEROS", value: 1}] },
-        { name: "FORMAL", children: [{name: "INMOBILIARIAS", value: 1}, {name: "PROFESIONALES", value: 1}, {name: "SERVICIOS", value: 1}, {name: "CORRALONES", value: 1}] }
-      ]
-    }
-  ]
-};
+const defaultData = {"name":"RED MORENO","children":[{"name":"ESTADO","children":[{"name":"MUNICIPAL","children":[{"name":"INTENDENCIA","value":1},{"name":"IDUAR","value":1},{"name":"OBRAS PÚBLICAS","value":1},{"name":"DEL. CUARTEL V","value":1},{"name":"HCD","value":1}]},{"name":"PROVINCIAL","children":[{"name":"OPISU","value":1},{"name":"COMIREC","value":1},{"name":"MIN. INFRAESTRUCTURA","value":1}]},{"name":"NACIONAL","children":[{"name":"SISU","value":1}]},{"name":"JUDICIAL","children":[{"name":"FISCALÍAS","value":1},{"name":"JUZGADOS / DEF.","value":1}]},{"name":"EDUCACIÓN","children":[{"name":"UNM","value":1},{"name":"FADU","value":1}]},{"name":"SEGURIDAD","children":[{"name":"POLICÍA","value":1}]}]},{"name":"MARCO LEGAL","children":[{"name":"NORMAS","children":[{"name":"LEY 8912","value":1},{"name":"LEY HÁBITAT","value":1},{"name":"CÓDIGO URBANO","value":1}]}]},{"name":"ORGANIZACIONES","children":[{"name":"SOCIAL / ONG","children":[{"name":"MADRE TIERRA","value":1},{"name":"TECHO","value":1},{"name":"MOV. SOCIALES","value":1},{"name":"COOPERATIVAS","value":1}]},{"name":"VECINAL","children":[{"name":"SOC. FOMENTO","value":1},{"name":"OCUPANTES","value":1}]}]},{"name":"MERCADO","children":[{"name":"INFORMAL","children":[{"name":"LOTEADORES INF.","value":1},{"name":"PUNTEROS","value":1}]},{"name":"FORMAL","children":[{"name":"INMOBILIARIAS","value":1},{"name":"PROFESIONALES","value":1},{"name":"SERVICIOS","value":1},{"name":"CORRALONES","value":1}]}]}]};
 
 const data = JSON.parse(localStorage.getItem('red_moreno_data')) || defaultData;
 
@@ -204,40 +169,7 @@ const leafNodes = hierarchy.leaves();
 
 const getNode = name => leafNodes.find(n => n.data.name === name);
 
-const defaultLinkDefinitions = [
-    { s: "INTENDENCIA", t: "IDUAR", type: 1 },
-    { s: "INTENDENCIA", t: "OBRAS PÚBLICAS", type: 1 },
-    { s: "OPISU", t: "INTENDENCIA", type: 5 },
-    { s: "COMIREC", t: "OBRAS PÚBLICAS", type: 5 },
-    { s: "SISU", t: "MOV. SOCIALES", type: 5 },
-    { s: "IDUAR", t: "OBRAS PÚBLICAS", type: 3 },
-    { s: "OBRAS PÚBLICAS", t: "DEL. CUARTEL V", type: 1 },
-    { s: "DEL. CUARTEL V", t: "OBRAS PÚBLICAS", type: 6 },
-    { s: "HCD", t: "IDUAR", type: 4 },
-    { s: "OCUPANTES", t: "DEL. CUARTEL V", type: 6 }, // Actualizado a Color 6
-    { s: "LOTEADORES INF.", t: "OCUPANTES", type: 4 },
-    { s: "LOTEADORES INF.", t: "IDUAR", type: 3 },
-    { s: "PUNTEROS", t: "DEL. CUARTEL V", type: 4 },
-    { s: "POLICÍA", t: "OCUPANTES", type: 3 },
-    { s: "POLICÍA", t: "LOTEADORES INF.", type: 3 },
-    { s: "LEY HÁBITAT", t: "IDUAR", type: 7 },
-    { s: "LEY 8912", t: "PROFESIONALES", type: 7 },
-    { s: "MADRE TIERRA", t: "IDUAR", type: 2 },
-    { s: "TECHO", t: "DEL. CUARTEL V", type: 4 },
-    { s: "UNM", t: "IDUAR", type: 4 },
-    { s: "UNM", t: "DEL. CUARTEL V", type: 4 },
-    { s: "UNM", t: "COOPERATIVAS", type: 4 },
-    { s: "UNM", t: "OCUPANTES", type: 4 },
-    { s: "FADU", t: "IDUAR", type: 4 },
-    { s: "FADU", t: "DEL. CUARTEL V", type: 4 },
-    { s: "FADU", t: "COOPERATIVAS", type: 4 },
-    { s: "FADU", t: "OCUPANTES", type: 4 },
-    { s: "CORRALONES", t: "OCUPANTES", type: 2 },
-    { s: "SERVICIOS", t: "OCUPANTES", type: 3 },
-    { s: "PROFESIONALES", t: "IDUAR", type: 4 },
-    { s: "DEL. CUARTEL V", t: "INTENDENCIA", type: 6 },
-    { s: "IDUAR", t: "HCD", type: 6 }
-];
+const defaultLinkDefinitions = [{"s":"INTENDENCIA","t":"IDUAR","type":1},{"s":"INTENDENCIA","t":"OBRAS PÚBLICAS","type":1},{"s":"OPISU","t":"INTENDENCIA","type":5},{"s":"COMIREC","t":"OBRAS PÚBLICAS","type":5},{"s":"SISU","t":"MOV. SOCIALES","type":5},{"s":"IDUAR","t":"OBRAS PÚBLICAS","type":3},{"s":"OBRAS PÚBLICAS","t":"DEL. CUARTEL V","type":1},{"s":"DEL. CUARTEL V","t":"OBRAS PÚBLICAS","type":6},{"s":"HCD","t":"IDUAR","type":4},{"s":"OCUPANTES","t":"DEL. CUARTEL V","type":6},{"s":"LOTEADORES INF.","t":"OCUPANTES","type":4},{"s":"LOTEADORES INF.","t":"IDUAR","type":3},{"s":"PUNTEROS","t":"DEL. CUARTEL V","type":4},{"s":"POLICÍA","t":"OCUPANTES","type":3},{"s":"POLICÍA","t":"LOTEADORES INF.","type":3},{"s":"LEY HÁBITAT","t":"IDUAR","type":7},{"s":"LEY 8912","t":"PROFESIONALES","type":7},{"s":"MADRE TIERRA","t":"IDUAR","type":2},{"s":"TECHO","t":"DEL. CUARTEL V","type":4},{"s":"UNM","t":"IDUAR","type":4},{"s":"UNM","t":"DEL. CUARTEL V","type":4},{"s":"UNM","t":"COOPERATIVAS","type":4},{"s":"UNM","t":"OCUPANTES","type":4},{"s":"FADU","t":"IDUAR","type":4},{"s":"FADU","t":"DEL. CUARTEL V","type":4},{"s":"FADU","t":"COOPERATIVAS","type":4},{"s":"FADU","t":"OCUPANTES","type":4},{"s":"CORRALONES","t":"OCUPANTES","type":2},{"s":"SERVICIOS","t":"OCUPANTES","type":3},{"s":"PROFESIONALES","t":"IDUAR","type":4},{"s":"DEL. CUARTEL V","t":"INTENDENCIA","type":6},{"s":"IDUAR","t":"HCD","type":6},{"s":"TECHO","t":"OCUPANTES","type":2},{"s":"INTENDENCIA","t":"POLICÍA","type":1},{"s":"MOV. SOCIALES","t":"OCUPANTES","type":2},{"s":"OBRAS PÚBLICAS","t":"LEY 8912","type":7},{"s":"HCD","t":"CÓDIGO URBANO","type":7}];
 
 const linkDefinitions = JSON.parse(localStorage.getItem('red_moreno_links')) || defaultLinkDefinitions;
 
