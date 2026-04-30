@@ -285,9 +285,9 @@ function renderLinks() {
             let diff = Math.abs(sA - tA);
             if (diff > Math.PI) diff = 2 * Math.PI - diff;
             
-            // Si están muy cerca (diff pequeño), el radio del punto medio se acerca a rB (curva abierta/superficial)
-            // Si están lejos (diff > 0.8 rad), el radio del punto medio baja al centro (0)
-            const midR = rB * Math.max(0, 1 - diff / 0.8); 
+            // Ajuste fino para la curvatura: usa raíz cuadrada para que la curva sea más pronunciada pero fluida
+            // Para diff pequeño, midR será aprox 0.6-0.7 * rB (similar al dibujo verde)
+            const midR = rB * (1 - Math.sqrt(Math.min(1, diff / 1.5))); 
             
             let aMid = (sA + tA) / 2;
             if (Math.abs(sA - tA) > Math.PI) aMid += Math.PI;
