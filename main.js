@@ -428,6 +428,28 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Eliminar Relación
+    document.getElementById("delete-relation").addEventListener("click", () => {
+        const s = document.getElementById("del-rel-source").value.trim().toUpperCase();
+        const t = document.getElementById("del-rel-target").value.trim().toUpperCase();
+
+        if (s && t) {
+            const initialLength = linkDefinitions.length;
+            linkDefinitions = linkDefinitions.filter(link => !(link.s === s && link.t === t));
+            
+            if (linkDefinitions.length < initialLength) {
+                localStorage.setItem('red_moreno_links', JSON.stringify(linkDefinitions));
+                renderLinks();
+                document.getElementById("del-rel-source").value = "";
+                document.getElementById("del-rel-target").value = "";
+            } else {
+                alert("No se encontró una relación desde " + s + " hacia " + t);
+            }
+        } else {
+            alert("Ingresa ambos actores para buscar la relación.");
+        }
+    });
+
     // Añadir Actor
     document.getElementById("add-actor").addEventListener("click", () => {
         const newName = document.getElementById("new-actor-name").value.trim().toUpperCase();
