@@ -260,8 +260,8 @@ const relationColors = {
 
 const line = d3.lineRadial()
     .curve(d3.curveBundle.beta(0.85))
-    .radius(radius - 215) // Conectar desde el radio del anillo interior (Actores)
-    .angle(d => (d.x0 + d.x1) / 2);
+    .radius(d => d.r)
+    .angle(d => d.a);
 
 const linksLayer = svg.append("g").attr("fill", "none").attr("class", "links-layer");
 let linkPaths;
@@ -277,7 +277,27 @@ function renderLinks() {
         .data(linksData)
         .join("path")
         .attr("class", "link")
-        .attr("d", d => line([d.source, {y: 0, x0: 0, x1: 0}, d.target]))
+        .attr("d", d => {
+            const sA = (d.source.x0 + d.source.x1) / 2;
+            const tA = (d.target.x0 + d.target.x1) / 2;
+            const rB = radius - 215;
+            
+            let diff = Math.abs(sA - tA);
+            if (diff > Math.PI) diff = 2 * Math.PI - diff;
+            
+            // Si están muy cerca (diff pequeño), el radio del punto medio se acerca a rB
+            // Si están lejos, el radio del punto medio tiende a 0 (el centro)
+            const midR = rB * Math.min(1, diff / 1.5); 
+            
+            let aMid = (sA + tA) / 2;
+            if (Math.abs(sA - tA) > Math.PI) aMid += Math.PI;
+
+            return line([
+                {r: rB, a: sA},
+                {r: midR, a: aMid},
+                {r: rB, a: tA}
+            ]);
+        })
         .attr("stroke", d => relationColors[d.type] || "#8e8e93")
         .attr("stroke-opacity", 0.4)
         .attr("stroke-width", 2);
