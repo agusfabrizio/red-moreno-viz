@@ -100,7 +100,7 @@ const arc = d3.arc()
     .innerRadius(d => {
         if (d.depth === 1) return radius - 50;
         if (d.depth === 2) return radius - 110;
-        return radius - 180;
+        return radius - 215;
     })
     .outerRadius(d => {
         if (d.depth === 1) return radius;
@@ -188,13 +188,13 @@ labels.selectAll(".radial-text")
     .attr("class", "radial-text")
     .attr("transform", function(d) {
         const x = (d.x0 + d.x1) / 2 * 180 / Math.PI - 90;
-        const y = radius - 147;
+        const y = radius - 165;
         return `rotate(${x}) translate(${y},0) rotate(${x > 90 ? 180 : 0})`;
     })
     .attr("dy", "0.35em")
     .attr("text-anchor", "middle")
     .attr("fill", "black")
-    .style("font-size", "7px")
+    .style("font-size", "10px")
     .style("font-weight", "600")
     .text(d => d.data.name.toUpperCase());
 
@@ -260,7 +260,7 @@ const relationColors = {
 
 const line = d3.lineRadial()
     .curve(d3.curveBundle.beta(0.85))
-    .radius(radius - 180) // Conectar desde el radio del anillo interior (Actores)
+    .radius(radius - 215) // Conectar desde el radio del anillo interior (Actores)
     .angle(d => (d.x0 + d.x1) / 2);
 
 const linksLayer = svg.append("g").attr("fill", "none").attr("class", "links-layer");
@@ -326,7 +326,10 @@ paths.on("mouseenter", function(event, d) {
     // Resaltar etiquetas
     svg.selectAll("text").transition().duration(300)
        .style("opacity", t => connectedNodes.has(t) ? 1 : 0.1)
-       .style("font-size", t => connectedNodes.has(t) ? "11px" : "9px");
+       .style("font-size", t => {
+           if (connectedNodes.has(t)) return t.depth === 3 ? "14px" : "11px";
+           return t.depth === 3 ? "10px" : "9px";
+       });
 })
 .on("mouseleave", function() {
     paths.attr("fill-opacity", 0.9)
@@ -340,7 +343,7 @@ paths.on("mouseenter", function(event, d) {
 
     svg.selectAll("text").transition().duration(300)
        .style("opacity", 0.8)
-       .style("font-size", d => d.depth === 3 ? "7px" : "9px");
+       .style("font-size", d => d.depth === 3 ? "10px" : "9px");
 });
 
 // Lógica de UI Interactiva
